@@ -23,9 +23,6 @@ import sys
 import os
 import re
 import argparse
-
-import pandas
-
 from bws.pedigree import PedigreeFile
 from bws.cancer import Genes, Cancers
 from bws.exceptions import PedigreeFileError
@@ -64,7 +61,7 @@ def get_rfs(line):
         line = line.replace("##", "").strip().split("=")
         if line[0] == 'TL':
             return 'Tubal_Ligation', line[1]
-        elif line[0].upper() == 'MHT_USE':
+        elif line[0] in ['mht_use', 'MHT_use']:
             return 'MHT_Use', line[1]
         elif line[0] == 'height':
             return 'Height', line[1]
@@ -74,7 +71,7 @@ def get_rfs(line):
             elif ":" in line[1]:
                 parts = line[1].split(":")
                 return ['OC_Use', 'OC_Duration'], [parts[0], parts[1]]
-        elif line[0].upper() == 'BIRADS':
+        elif line[0] in ['birads', 'BIRADS']:
             return 'BIRADS', line[1]
         elif line[0] == 'endo':
             return 'Endometriosis', line[1]
@@ -114,7 +111,6 @@ def get_rf_values(pedigree_data):
         else:
             record = line.split()
             this_famid = record[0].strip()
-            this_famid = this_famid.replace("-", "")[:8]
             if famid is None or famid != this_famid:         # start of pedigree
                 canrisk_headers[this_famid] = canrisk_header
                 famid = this_famid
@@ -226,20 +222,6 @@ def convert2csv(filename, csvfilename, censoring_ages_freq=[1, 5, 10]):
     csv_file.close()
 
 
-def merge_csv(directory, output):
-    for filename in os.listdir(directory):
-        filepath = os.path.join(directory, filename)
-
-        df = pandas.read_csv(filepath)
-
-        if os.path.exists(output):
-            df.to_csv(output, mode='a', header=False, index=False)
-        else:
-            df.to_csv(output, index=False)
-
-
-
-
 # command line parser
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
@@ -260,13 +242,10 @@ if __name__ == "__main__":
     # if not os.path.isfile(filename):
     #     print(filename + " is not a file.")
     #     sys.exit(1)
-    # convert2csv(filename, csvfilename, cen)
 
     for filename in os.listdir('./data/pedigree/'):
         print(filename)
         filepath = f'./data/pedigree/{filename}'
         output_filepath = f'./data/new_pedigree/{filename.replace(".txt", ".csv")}'
 
-        convert2csv(filepath, output_filepath, censoring_ages_freq=[1, 5, 10])
-
-    merge_csv('./data/new_pedigree/', './data/merge_pedigree.csv')
+        convert2csv(filepath, output_filepath, censoring_ages_freq=[0])

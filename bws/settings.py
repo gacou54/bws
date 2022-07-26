@@ -1,22 +1,11 @@
 from collections import OrderedDict
 import os
 import re
-import vcf2prs
 from pathlib import Path
 
 
 def get_alpha(ref_file):
-    ''' Get PRS alpha from a reference file header. '''
-    moduledir = Path(vcf2prs.__file__).parent.parent
-    ref_file = os.path.join(moduledir, "PRS_files", ref_file)
-    try:
-        snp_file = open(ref_file, 'r')
-        alpha = vcf2prs.prsinfo.PrsInfo.extract_alpha(snp_file.__next__())
-    except (IOError, UnicodeDecodeError, StopIteration):
-        raise vcf2prs.exception.Vcf2PrsError('Error: Unable to open the file "{0}".'.format(ref_file))
-    finally:
-        snp_file.close()
-    return alpha
+    return
 
 
 # FORTRAN settings
