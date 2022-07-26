@@ -4,6 +4,10 @@ import re
 from pathlib import Path
 
 
+def line_that_contain(s1, s2, fp):
+    return [line for line in fp if s1 in line and s2 in line][0]
+
+
 def get_alpha(ref_file):
     return
 
@@ -124,9 +128,15 @@ BC_MODEL = {
     ]),
     'PRS_REFERENCE_FILES': OrderedDict([
         ('BCAC 313', 'BCAC_313_PRS.prs'),
+        ('BCAC 3820', 'BCAC_3820_PRS.prs'),
         ('BRIDGES 306', 'BRIDGES_306_PRS.prs'),
+        # ('DBDS 299', 'DBDS_299_PRS.prs'),
+        ('EGLH-CEN 303', 'EGLH-CEN_303_PRS.prs'),
+        # ('EMERGE 309', 'EMERGE_309_PRS.prs'),
         ('PERSPECTIVE 295', 'PERSPECTIVE_295_PRS.prs'),
-        ('PRISMA 289', 'PRISM_289_PRS.prs')
+        ('PRISMA 268', 'PRISM_268_PRS.prs'),
+        ('WISDOM 75', 'WISDOM_75_PRS.prs'),
+        ('WISDOM 128', 'WISDOM_128_PRS.prs')
     ])
 }
 BC_MODEL["INCIDENCE"] = os.path.join(BC_MODEL["HOME"], 'Data') + "/incidences_"
@@ -197,6 +207,7 @@ OC_MODEL = {
         ('Other', 'UK')
     ]),
     'PRS_REFERENCE_FILES': OrderedDict([
+        ('OC-EGLH-CEN 34', 'OCAC_34_PRS.prs'),
         ('OCAC 36', 'OCAC_36_PRS.prs')
     ])
 }
