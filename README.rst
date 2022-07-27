@@ -95,3 +95,39 @@ pedigree file and will prompt for the password and run the risk calculation via 
     ${PATH_TO_BWS}/bws/scripts/run_webservice.py --help
     ${PATH_TO_BWS}/bws/scripts/run_webservice.py --url ${URL} -u ${USER} \
                                                  -p ${PATH_TO_BWS}/bws/tests/data/pedigree_data.txt 
+
+To run the conversion script
+----------------------------
+
+1. Open a terminal and go  to the desired path (e.g. with `cd`).::
+
+    cd ./to/desired/directory/
+
+2. Clone (or download the project)::
+
+    git clone https://github.com/ulaval-rs/bws
+
+3. Make a new Python environment (this assume that you have access to `python` from the terminal).::
+
+    python -m venv venv
+
+4. Install the project dependencies::
+
+    ./venv/bin/pip install -r requirements.txt
+
+5. Copy-paste the `dev.env` to `.env`. This will contain the environment variables needed to run the scripts.::
+
+    cp dev.env .env
+
+6. Fill the `.env` file with the correct information (`REDCAP_TOKEN`, `REDCAP_URL` and `REDCAP_PEDIGREE_VARIABLE`).
+7. Run the `retrieve.py` file. This file retrieve the pedigree files
+(at specified `REDCAP_PEDIGREE_VARIABLE`) from REDCap and store them at `./data/pedigree/`.::
+
+    ./venv/bin/python ./bws/scripts/retrieve.py
+
+8. If no error occurs, there should be .txt files at `./data/pedigree/`.
+9. Now to convert the .txt files to .csv files, run the following script::
+
+    ./venv/bin/python ./bws/scripts/canrisk_2_csv.py
+
+10. CSV files should be at `./data/new_pedigree/`, and the merged CSV file at `./data/merged_pedigree.csv`

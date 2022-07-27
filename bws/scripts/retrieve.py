@@ -8,6 +8,7 @@ load_dotenv('.env')
 
 REDCAP_TOKEN = os.environ.get('REDCAP_TOKEN')
 REDCAP_URL = os.environ.get('REDCAP_URL')
+REDCAP_PEDIGREE_VARIABLE = os.environ.get('REDCAP_PEDIGREE_VARIABLE')
 
 
 def pedigree_generator(project):
@@ -19,7 +20,7 @@ def pedigree_generator(project):
 
         file_content = None
         try:
-            file_content, _ = project.export_file(record=record_id, field='fich_envoi_boadicea')
+            file_content, _ = project.export_file(record=record_id, field=REDCAP_PEDIGREE_VARIABLE)
             file_content = file_content.decode()
 
         except requests.RequestException:

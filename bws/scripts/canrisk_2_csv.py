@@ -256,4 +256,4 @@ if __name__ == "__main__":
         convert2csv(filepath, output_filepath, censoring_ages_freq=[1, 5, 10])
 
     # Merge the all the CSV files in a single CSV file
-    merge_csv('./data/new_pedigree/', './data/merge_pedigree.csv')
+    merge_csv('./data/new_pedigree/', './data/merged_pedigree.csv')
