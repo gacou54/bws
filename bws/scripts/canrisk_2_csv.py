@@ -19,14 +19,20 @@ export DJANGO_SETTINGS_MODULE=bws.settings
 python3 -m bws.scripts.canrisk_2_csv pedigree_file.canrisk output.csv -c 1 5 80
 
 '''
-import sys
 import os
+import sys
 import re
-import argparse
+
+# Some magic so that the bws files will be importable
+from dotenv import load_dotenv
+load_dotenv('.env')
+sys.path.append('./')
+
+import pandas
+
 from bws.pedigree import PedigreeFile
 from bws.cancer import Genes, Cancers
 from bws.exceptions import PedigreeFileError
-# from django.conf import settings
 
 
 REGEX_CANRISK1_PEDIGREE_FILE_HEADER = \
@@ -223,24 +229,31 @@ def convert2csv(filename, csvfilename, censoring_ages_freq=[1, 5, 10]):
     csv_file.close()
 
 
-# command line parser
+def merge_csv(directory, output):
+    if os.path.exists(output):
+        os.remove(output)
+
+    for filename in os.listdir(directory):
+        filepath = os.path.join(directory, filename)
+
+        df = pandas.read_csv(filepath)
+
+        if os.path.exists(output):
+            df.to_csv(output, mode='a', header=False, index=False)
+        else:
+            df.to_csv(output, index=False)
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("pedigree", type=argparse.FileType('r'),
-                        help="boadicea pedigree file")
-    parser.add_argument("csv", type=argparse.FileType('w'),
-                        help="csv output file")
-    parser.add_argument("-c", nargs="+", type=int,
-                        default=[1, 5, 10],
-                        help="censoring ages")
+    if not os.path.exists('./data/new_pedigree'):
+        os.makedirs('./data/new_pedigree')
 
-    args = parser.parse_args()
-    vargs = vars(args)
-    filename = vargs['pedigree'].name
-    csvfilename = vargs['csv'].name
-    cen = list(args.c)
+    for filename in os.listdir('./data/pedigree/'):
+        print(filename)
+        filepath = f'./data/pedigree/{filename}'
+        output_filepath = f'./data/new_pedigree/{filename.replace(".txt", ".csv")}'
 
-    if not os.path.isfile(filename):
-        print(filename + " is not a file.")
-        sys.exit(1)
-    convert2csv(filename, csvfilename, cen)
+        convert2csv(filepath, output_filepath, censoring_ages_freq=[1, 5, 10])
+
+    # Merge the all the CSV files in a single CSV file
+    merge_csv('./data/new_pedigree/', './data/merged_pedigree.csv')
