@@ -20,7 +20,13 @@ python3 -m bws.scripts.canrisk_2_csv pedigree_file.canrisk output.csv -c 1 5 80
 
 '''
 import os
+import sys
 import re
+
+# Some magic so that the bws files will be importable
+from dotenv import load_dotenv
+load_dotenv('.env')
+sys.path.append('./')
 
 import pandas
 
