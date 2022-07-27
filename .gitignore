@@ -9,3 +9,11 @@ __pycache__/
 *.swp
 migrations
 *log
+
+.env
+
+data/
+data/**
+
+venv/
+venv/**

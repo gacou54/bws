@@ -238,30 +238,7 @@ def merge_csv(directory, output):
             df.to_csv(output, index=False)
 
 
-
-
-# command line parser
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("pedigree", type=argparse.FileType('r'),
-    #                     help="boadicea pedigree file")
-    # parser.add_argument("csv", type=argparse.FileType('w'),
-    #                     help="csv output file")
-    # parser.add_argument("-c", nargs="+", type=int,
-    #                     default=[1, 5, 10],
-    #                     help="censoring ages")
-    #
-    # args = parser.parse_args()
-    # vargs = vars(args)
-    # filename = vargs['pedigree'].name
-    # csvfilename = vargs['csv'].name
-    # cen = list(args.c)
-    #
-    # if not os.path.isfile(filename):
-    #     print(filename + " is not a file.")
-    #     sys.exit(1)
-    # convert2csv(filename, csvfilename, cen)
-
     for filename in os.listdir('./data/pedigree/'):
         print(filename)
         filepath = f'./data/pedigree/{filename}'
