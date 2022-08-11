@@ -72,12 +72,14 @@ def get_rfs(line):
         elif line[0] == 'height':
             return 'Height', line[1]
         elif line[0].upper() == 'OC_USE':
-            if line[1] == "N" or line[1] == "C":
+            if line[1] == "N" or line[1] == "C" or line[1] == 'NA':
                 return ['OC_Use', 'OC_Duration'], [line[1], '0']
             elif ":" in line[1]:
                 parts = line[1].split(":")
                 return ['OC_Use', 'OC_Duration'], [parts[0], parts[1]]
         elif line[0].upper() == 'BIRADS':
+            if str(line[1]) == '9':
+                return 'BIRADS', ''
             return 'BIRADS', line[1]
         elif line[0] == 'endo':
             return 'Endometriosis', line[1]
@@ -150,8 +152,7 @@ def convert2csv(filename, csvfilename, censoring_ages_freq=[1, 5, 10]):
     cheaders = get_rf_values(pedigree_data)
     genes = Genes.get_all_model_genes()
 
-    hdr = ["FamID", "Name", "Proband", "IndivID", "FathID", "MothID", "Sex", "MZtwin", "Dead",
-           "Age", "Yob", "BrCa_1st", "BrCa_2nd", "OvCa", "ProCa", "PanCa", "Ashkn"]
+    hdr = ["FamID", "Proband", "IndivID", "FathID", "MothID", "Sex", "MZtwin", "Dead", "Age", "Yob", "BrCa_1st", "BrCa_2nd", "OvCa", "ProCa", "PanCa", "Ashkn"]
 
     for gene in genes:
         hdr.extend([gene+"t", gene+"r"])
@@ -175,7 +176,6 @@ def convert2csv(filename, csvfilename, censoring_ages_freq=[1, 5, 10]):
         for censoring_age in calc_ages:
             for person in ped.people:
                 print(person.famid+":"+censoring_age, file=csv_file, end=",")
-                print(person.name, file=csv_file, end=",")
                 print(person.target if person.target == "1" else "", file=csv_file, end=",")
                 print(person.pid, file=csv_file, end=",")
                 print(person.fathid if person.fathid != "0" else "", file=csv_file, end=",")
