@@ -106,6 +106,7 @@ To run the conversion script
 2. Clone (or download the project)::
 
     git clone https://github.com/ulaval-rs/bws
+    cd bws
 
 3. Make a new Python environment (this assume that you have access to `python` from the terminal).::
 
