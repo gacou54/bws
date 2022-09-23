@@ -1,4 +1,5 @@
 import os
+import time
 
 import redcap
 import requests
@@ -18,7 +19,11 @@ def pedigree_generator(project):
         if record_id in ['1', '2']:
             continue
 
+        if os.path.exists(f'./data/pedigree/{record_id}.txt'):
+            continue
+
         file_content = None
+        time.sleep(0.2)
         try:
             file_content, _ = project.export_file(record=record_id, field=REDCAP_PEDIGREE_VARIABLE)
             file_content = file_content.decode()

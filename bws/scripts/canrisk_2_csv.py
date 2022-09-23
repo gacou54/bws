@@ -19,6 +19,8 @@ export DJANGO_SETTINGS_MODULE=bws.settings
 python3 -m bws.scripts.canrisk_2_csv pedigree_file.canrisk output.csv -c 1 5 80
 
 '''
+import csv
+import io
 import os
 import sys
 import re
@@ -51,6 +53,7 @@ def get_prs(line, cancer):
     @param line: CanRisk PRS header e.g. PRS_BC=alpha=0.444,zscore=1.12
     @param cancer: string denoting cancer type, i.e. 'BC' or 'OC'
     '''
+    line = line.replace('beta', 'zscore')
     zscore = re.match("##PRS.*(zscore=([-]?\d*\.\d+)).*", line)
     alpha = re.match("##PRS.*(alpha=([-]?\d*\.\d+)).*", line)
     if zscore is not None and alpha is not None:
@@ -236,12 +239,20 @@ def merge_csv(directory, output):
     for filename in os.listdir(directory):
         filepath = os.path.join(directory, filename)
 
-        df = pandas.read_csv(filepath)
+        with open(filepath) as file:
+            reader = csv.reader(file)
 
-        if os.path.exists(output):
-            df.to_csv(output, mode='a', header=False, index=False)
-        else:
-            df.to_csv(output, index=False)
+            if os.path.exists(output):
+                next(reader, None)
+
+            with open(output, 'a') as file:
+                for line in reader:
+                    file.write(','.join(line) + '\n')
+
+        # if os.path.exists(output):
+        #     df.to_csv(output, mode='a', header=False, index=False)
+        # else:
+        #     df.to_csv(output, index=False)
 
 
 if __name__ == "__main__":
@@ -253,7 +264,14 @@ if __name__ == "__main__":
         filepath = f'./data/pedigree/{filename}'
         output_filepath = f'./data/new_pedigree/{filename.replace(".txt", ".csv")}'
 
-        convert2csv(filepath, output_filepath, censoring_ages_freq=[1, 5, 10])
+        if os.path.exists(output_filepath):
+            continue
+
+        try:
+            convert2csv(filepath, output_filepath, censoring_ages_freq=[1, 5, 10])
+            print(f'Processed {filename}')
+        except Exception as e:
+            print(filename, 'error')
 
     # Merge the all the CSV files in a single CSV file
     merge_csv('./data/new_pedigree/', './data/merged_pedigree.csv')

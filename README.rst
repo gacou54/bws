@@ -121,6 +121,7 @@ To run the conversion script
     cp dev.env .env
 
 6. Fill the `.env` file with the correct information (`REDCAP_TOKEN`, `REDCAP_URL` and `REDCAP_PEDIGREE_VARIABLE`).
+
 7. Run the `retrieve.py` file. This file retrieve the pedigree files
 (at specified `REDCAP_PEDIGREE_VARIABLE`) from REDCap and store them at `./data/pedigree/`.::
 
